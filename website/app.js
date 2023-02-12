@@ -6,21 +6,28 @@ let newDate = d.getMonth() + "." + d.getDate() + "." + d.getFullYear();
 document.querySelector('#generate').addEventListener('click', async () => {
     let zip = document.querySelector('#zip').value
     if(zip){
-        await fetch("/getData", {
-          method: "POST", // *GET, POST, PUT, DELETE, etc.
-          mode: "cors", // no-cors, *cors, same-origin
-          cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-          credentials: "same-origin", // include, *same-origin, omit
-          headers: {
-              'Content-Type': 'application/json'
-              // 'Content-Type': 'application/x-www-form-urlencoded',
+      await fetch('/getApi',{
+        method:'POST',
+        headers:{
+          'content-type': 'application/json',
+        },
+        body:JSON.stringify({
+          zip:zip
+      })}).then(res => res.json()).then(res => {
+        fetch(res.url).then(response => response.json()).then(async (res) =>{
+          await fetch('/getData',{
+            method:'POST',
+            headers:{
+              'content-type': 'application/json',
             },
-          body:JSON.stringify({
-              zip:zip,
+            body:JSON.stringify({
               date:newDate,
-              feel:document.querySelector('#feelings').value
-          })
-        }).then((data) => data.json()).then(x=> updateUi(x))
+              temp:res.main.temp,
+              feelings:document.querySelector('#feelings').value
+            })
+          }).then(res =>res.json()).then(res => updateUi(res))
+        } )
+      })
     }else{
         alert('please enter Zip Code')
     }
@@ -29,5 +36,5 @@ document.querySelector('#generate').addEventListener('click', async () => {
 function updateUi(x){
     document.querySelector('#date').innerHTML=`date : ${x.date}`
     document.querySelector('#temp').innerHTML=`temperature : ${Math.round(x.temp)} degrees`
-    document.querySelector('#content').innerHTML=`Your Feelings : ${x.feel}`
+    document.querySelector('#content').innerHTML=`Your Feelings : ${x.feelings}`
 }

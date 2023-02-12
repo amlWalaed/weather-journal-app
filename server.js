@@ -23,12 +23,14 @@ app.use(express.static('website'));
 
 
 // Setup Server
+app.post('/getApi', (req , res) => {
+    res.send({url:url+apiKey+'&zip='+req.body.zip})
+})
 app.post('/getData', async (req, res) => {
     try{
-       let response =  await fetch(url+apiKey+'&zip='+req.body.zip).then(response => response.json())
        projectData.push(req.body)
        res.send({
-        temp:response.main.temp,
+        temp:req.body.temp,
         date:req.body.date,
         feel:req.body.feel
     })
