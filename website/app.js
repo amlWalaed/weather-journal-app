@@ -3,6 +3,7 @@
 // Create a new date instance dynamically with JS
 let d = new Date();
 let newDate = d.getMonth() + "." + d.getDate() + "." + d.getFullYear();
+
 document.querySelector('#generate').addEventListener('click', async () => {
     let zip = document.querySelector('#zip').value
     if(zip){
@@ -25,7 +26,8 @@ document.querySelector('#generate').addEventListener('click', async () => {
               temp:res.main.temp,
               feelings:document.querySelector('#feelings').value
             })
-          }).then(res =>res.json()).then(res => updateUi(res))
+          }).then(async () =>
+          await fetch('/getProjectData').then(res => res.json()).then(res => updateUi(res)))
         } )
       })
     }else{
@@ -33,8 +35,11 @@ document.querySelector('#generate').addEventListener('click', async () => {
     }
   
   })
-function updateUi(x){
+function updateUi(projectData){
+  projectData.forEach(x => {
     document.querySelector('#date').innerHTML=`date : ${x.date}`
     document.querySelector('#temp').innerHTML=`temperature : ${Math.round(x.temp)} degrees`
     document.querySelector('#content').innerHTML=`Your Feelings : ${x.feelings}`
+    
+  });
 }

@@ -29,14 +29,13 @@ app.post('/getApi', (req , res) => {
 app.post('/getData', async (req, res) => {
     try{
        projectData.push(req.body)
-       res.send({
-        temp:req.body.temp,
-        date:req.body.date,
-        feel:req.body.feel
-    })
+       res.send('')
     }catch(err){
         console.log(err)
     }
+})
+app.get('/getProjectData',(req , res)=>{
+    res.send(projectData)
 })
 const port = 3333
 app.listen(port, function(req , res){
